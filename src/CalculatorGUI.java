@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Stack;
 
 public class CalculatorGUI extends JFrame {
     //라벨과 커스텀패널 객체생성
@@ -66,6 +68,88 @@ public class CalculatorGUI extends JFrame {
                 }
             });
         }
+        // = 연산
+        panel.btn[13].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //split(label.getText());
+                System.out.println(postfixToInfix(label.getText()));
+                System.out.println(3+6*9-5/8);
+            }
+        });
+    }
+
+    int calculate(String cal){
+        int result = 0;
+        String[] operator = {"+","-","x","/"};
+        Stack<Integer> stack = new Stack<>();
+        for(char c : cal.toCharArray()){
+            if(Arrays.asList(operator).contains(c+"")){
+                int second = stack.pop();
+                int first = stack.pop();
+
+                switch (c){
+                    case '+':
+                        stack.push(second + first);
+                        break;
+                    case '-':
+                        stack.push(second - first);
+                        break;
+                    case 'x':
+                        stack.push(second * first);
+                        break;
+                    case '/':
+                        stack.push(second / first);
+                        break;
+                }
+            }else{
+                stack.push(Integer.parseInt(c+""));
+            }
+        }
+        result = stack.pop();
+        return result;
+    }
+    String postfixToInfix(String lab){
+        StringBuilder answer = new StringBuilder();
+        Stack<String> stack = new Stack<>();
+        String[] op = {"+", "-", "x", "/"};
+        for(char c : lab.toCharArray()){
+            if(Arrays.asList(op).contains(c+"")){
+                while(!stack.isEmpty() && compare(c,stack.peek().charAt(0))){
+                    answer.append(stack.pop());
+
+                }
+                stack.push(c + "");
+            }else {
+                answer.append(c);
+            }
+        }
+        while (!stack.isEmpty()) {
+            answer.append(stack.pop());
+        }
+        return answer.toString();
+    }
+
+    boolean compare(char op1, char op2){
+        switch(op1){
+            case '+':
+                if(op2 == '+' || op2 == '-' || op2 == 'x' || op2 == '/'){
+                    return true;
+                }
+            case '-':
+                if(op2 == '+' || op2 == '-' || op2 == 'x' || op2 == '/'){
+                    return true;
+                }
+            case 'x':
+                if(op2 == 'x' || op2 == '/'){
+                    return true;
+                }
+            case '/':
+                if(op2 == 'x' || op2 == '/'){
+                    return true;
+                }
+        }
+        return false;
     }
     int plus(int a,int b){
         return a+b;
