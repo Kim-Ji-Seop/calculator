@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Stack;
+import java.lang.Math;
 
 public class CalculatorGUI extends JFrame {
     //라벨과 커스텀패널 객체생성
@@ -74,7 +75,54 @@ public class CalculatorGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //split(label.getText());
                 System.out.println(postfixToInfix(label.getText()));
-                System.out.println(3+6*9-5/8);
+                //System.out.println(3+6*9-5/8);
+                System.out.println(calculate(postfixToInfix(label.getText())));
+                label.setText(String.valueOf(calculate(postfixToInfix(label.getText()))));
+            }
+        });
+        //C눌렀을 때
+        panel.btn[10].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                label.setText("0");
+            }
+        });
+        //루트씌웠을때
+        panel.btn[11].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double num = Double.parseDouble(label.getText());
+                double result = Math.sqrt(num);
+                label.setText(String.valueOf(result));
+            }
+        });
+        //지우기
+        panel.btn[12].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    int size = label.getText().length();
+                    if(size == 1){
+                        label.setText("0");
+                    }else{
+                        StringBuilder str = new StringBuilder();
+                        str.append(label.getText());
+                        str.deleteCharAt(size - 1);
+                        label.setText(String.valueOf(str));
+                    }
+
+                }catch (Exception except){
+                    except.printStackTrace();
+                    label.setText("0");
+                }
+
+            }
+        });
+        //+/- 부호바꾸기
+        panel.btn[18].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                label.setText(String.valueOf((-1 * Integer.parseInt(label.getText()))));
             }
         });
     }
@@ -90,16 +138,16 @@ public class CalculatorGUI extends JFrame {
 
                 switch (c){
                     case '+':
-                        stack.push(second + first);
+                        stack.push(first + second);
                         break;
                     case '-':
-                        stack.push(second - first);
+                        stack.push(first - second);
                         break;
                     case 'x':
-                        stack.push(second * first);
+                        stack.push(first * second);
                         break;
                     case '/':
-                        stack.push(second / first);
+                        stack.push(first / second);
                         break;
                 }
             }else{
